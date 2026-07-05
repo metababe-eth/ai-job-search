@@ -1,7 +1,7 @@
 ---
 name: job-scraper
 description: >
-  Scrapes Danish job sites for new positions matching your profile. Deduplicates across runs.
+  Scrapes US job sites for new positions matching your profile. Deduplicates across runs.
   Triggers on: job scrape, find jobs, search jobs, new jobs, job search, scrape jobs, /scrape
 allowed-tools: Read, Write, Edit, Glob, Grep, WebFetch, WebSearch, Agent, AskUserQuestion
 ---
@@ -12,7 +12,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep, WebFetch, WebSearch, Agent, AskUse
 
 ## How It Works
 
-This skill searches multiple Danish job sites using targeted queries based on your profile, deduplicates against previously seen jobs and the application tracker, and presents new matches with a quick fit assessment.
+This skill searches LinkedIn (via the built-in `linkedin-search` CLI) and other US job sites using targeted queries based on your profile, deduplicates against previously seen jobs and the application tracker, and presents new matches with a quick fit assessment.
 
 ## Invocation
 
@@ -38,13 +38,18 @@ Optional arguments:
 
 ### Step 1: Search
 
-Run **WebSearch** queries from `search-queries.md`. By default, run the top 3 priority categories. If the user said "broad", run all categories.
+**Primary source — LinkedIn CLI.** Run the `linkedin-search` skill (`.agents/skills/linkedin-search/`) for each role/keyword in `search-queries.md`:
+
+```bash
+bun run .agents/skills/linkedin-search/cli/src/cli.ts search -q "<query>" -l "<your city/state or Remote>" --jobage 14 --format json
+```
+
+**Secondary source — WebSearch.** Run **WebSearch** queries from `search-queries.md` (Indeed, Built In, Wellfound, company career pages). By default, run the top 3 priority categories. If the user said "broad", run all categories.
 
 If the user specified a focus area (e.g. "data science"), prioritize queries from that category.
 
 For each search:
-- Use `WebSearch` with site-specific queries (jobindex.dk, linkedin.com/jobs, karriere.dk, etc.)
-- Target your configured geographic area
+- Target your configured geographic area (or "Remote")
 - Look for postings from the last 14 days
 
 ### Step 2: Fetch & Parse

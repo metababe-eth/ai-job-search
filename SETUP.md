@@ -24,7 +24,7 @@ python --version
 
 ### Bun (for job search tools)
 
-The Danish job portal CLIs are written in TypeScript and run with Bun:
+The LinkedIn job search CLI is written in TypeScript and runs with Bun:
 
 ```bash
 curl -fsSL https://bun.sh/install | bash
@@ -40,22 +40,16 @@ Install a LaTeX distribution to compile the generated `.tex` files to PDF:
 
 The CV compiles with `lualatex` (pdflatex often fails on modern MiKTeX installs with `fontawesome5` font-expansion errors). The cover letter compiles with `xelatex` because `cover.cls` requires `fontspec` for its custom Lato/Raleway fonts.
 
-## 2. Fork and clone
+## 2. Clone
 
 ```bash
-gh repo fork MadsLorentzen/ai-job-search --clone
+git clone https://github.com/metababe-eth/ai-job-search.git
 cd ai-job-search
 ```
 
-Or manually: fork on GitHub, then clone your fork.
-
 ## 3. Install job search CLI dependencies
 
-```bash
-for tool in jobbank-search jobdanmark-search jobindex-search jobnet-search; do
-  cd .agents/skills/$tool/cli && bun install && cd ../../../..
-done
-```
+Nothing to install — the `linkedin-search` CLI has zero runtime dependencies and runs directly with Bun.
 
 ## 4. Run the setup interview
 
@@ -121,7 +115,7 @@ This creates `salary_data.json` which the `/apply` workflow uses for salary benc
 Find a job posting you're interested in, then:
 
 ```
-/apply https://jobindex.dk/job/1234567
+/apply https://www.linkedin.com/jobs/view/4426311357
 ```
 
 Or paste the job description directly:
@@ -155,7 +149,7 @@ cd cover_letters && xelatex cover_<company>_<role>.tex && cd ..
 This is expected if you haven't set up salary benchmarking. The `/apply` workflow skips this step automatically.
 
 ### Job search CLI tools not working
-Make sure Bun is installed and you ran `bun install` in each CLI directory. The tools require network access to fetch job listings.
+Make sure Bun is installed. The tools require network access to fetch job listings.
 
 ### LaTeX compilation errors
 - CV: uses `lualatex` (pdflatex often fails on modern MiKTeX with `fontawesome5` font-expansion errors; lualatex handles the same sources cleanly)
